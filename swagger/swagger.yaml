@@ -6,11 +6,19 @@ basePath: "/"
 schemes:
 - "http"
 paths:
-  /sts/{eventType}:
+  /aws/sns/sts:
     get:
-      summary: "Publish SyndicationEvent to SNS"
-      description: "Publishes a message to the topic. This functionality is for debugging purposes and may be disabled."
-      operationId: "sendSyndicationEventToSns"
+      summary: "Get creds for SNS"
+      description: "Prints AWS environment variables for SNS on the console."
+      operationId: "getSnsCreds"
+      responses:
+        204:
+          description: "successful operation"
+  /aws/sqs:
+    post:
+      summary: "Publish to SNS"
+      description: "Publishes a message to the topic."
+      operationId: "postMessageToSns"
       consumes:
       - "application/json"
       produces:
