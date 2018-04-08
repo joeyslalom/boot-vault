@@ -7,6 +7,7 @@ import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
+import org.springframework.stereotype.Component
 import org.springframework.vault.annotation.VaultPropertySource
 
 
@@ -63,4 +64,9 @@ class Config {
                 .withCredentials(provider)
                 .build()
     }
+}
+
+@Component
+class SnsClient(private val amazonSnsAsync: AmazonSNSAsync) {
+    fun publish(topicArn: String, message: String): String = amazonSnsAsync.publish(topicArn, message).messageId
 }

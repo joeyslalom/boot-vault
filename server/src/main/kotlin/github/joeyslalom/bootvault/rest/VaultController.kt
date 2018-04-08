@@ -1,8 +1,10 @@
 package github.joeyslalom.bootvault.rest
 
+import github.joeyslalom.bootvault.SnsClient
 import github.joeyslalom.bootvault.SnsVaultProps
 import github.joeyslalom.bootvault.rest.api.AwsApi
 import github.joeyslalom.bootvault.rest.api.TransitApi
+import github.joeyslalom.bootvault.rest.model.PublishResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 
 
 @Controller
-class AwsController(private val snsVaultProps: SnsVaultProps) : AwsApi {
+class AwsController(private val snsVaultProps: SnsVaultProps, private val snsClient: SnsClient) : AwsApi {
     private val log = LoggerFactory.getLogger(AwsController::class.java)
 
     override fun getSnsCreds(): ResponseEntity<Void> {
@@ -23,6 +25,11 @@ export AWS_SECRET_ACCESS_KEY=${credentials.secretKey}
 export AWS_SESSION_TOKEN=${credentials.securityToken}
 """)
         return ResponseEntity.noContent().build()
+    }
+
+    override fun postMessageToSns(@PathVariable topicArn: String, @RequestBody body: String): ResponseEntity<PublishResponse> {
+        val messageId = snsClient.publish(topicArn, body)
+        return ResponseEntity.ok(PublishResponse().messageId(messageId))
     }
 }
 

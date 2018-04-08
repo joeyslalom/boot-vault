@@ -14,7 +14,7 @@ paths:
       responses:
         204:
           description: "successful operation"
-  /aws/sqs:
+  /aws/sns/{topicArn}:
     post:
       summary: "Publish to SNS"
       description: "Publishes a message to the topic."
@@ -25,13 +25,14 @@ paths:
       - "application/json"
       parameters:
       - in: "path"
-        name: "eventType"
-        type: "string"
-        description: "The type of SyndicationEvent being sent"
+        name: "topicArn"
+        description: "topic to publish to"
         required: true
+        type: string
       - in: "body"
         name: "body"
-        description: "the SyndicationEvent to create"
+        description: "the message to publish"
+        required: true
         schema:
           type: string
       responses:
@@ -41,8 +42,6 @@ paths:
             $ref: "#/definitions/PublishResponse"
         400:
           description: "Invalid input"
-        405:
-          description: "Endpoint is disabled"
   /transit/keys:
     get:
       summary: "List keys"
@@ -110,8 +109,15 @@ paths:
           schema:
             type: string
 definitions:
+  PublishRequest:
+    type: "object"
+    properties:
+      topicArn:
+        type: string
+      message:
+        type: string
   PublishResponse:
     type: "object"
     properties:
       messageId:
-        type: "string"
+        type: string
