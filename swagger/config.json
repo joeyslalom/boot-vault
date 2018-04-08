@@ -1,0 +1,11 @@
+{
+  "groupId": "github.joeyslalom",
+  "artifactId": "generated-swagger",
+  "artifactVersion": "1.0.0",
+  "library": "spring-boot",
+  "modelPackage": "github.joeyslalom.bootvault.rest.model",
+  "apiPackage": "github.joeyslalom.bootvault.rest.api",
+  "interfaceOnly": true,
+  "java8": true,
+  "dateLibrary": "java8-localdatetime"
+}

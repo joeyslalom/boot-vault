@@ -1,0 +1,26 @@
+
+plugins {
+    id 'org.hidetake.swagger.generator' version '2.11.0'
+    id 'java'
+}
+
+dependencies {
+    compile 'io.swagger:swagger-annotations:1.5.18'
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    swaggerCodegen 'io.swagger:swagger-codegen-cli:2.3.1'
+}
+
+swaggerSources {
+    sbux {
+        inputFile = file('swagger.yaml')
+        code {
+            language = 'spring'
+            configFile = file('config.json')
+            components = ['models', 'apis']
+        }
+    }
+}
+
+// Configure compile task dependency and source
+compileJava.dependsOn swaggerSources.sbux.code
+sourceSets.main.java.srcDir "${swaggerSources.sbux.code.outputDir}/src/main/java"

@@ -1,0 +1,244 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "GSIT Event Archive"
+basePath: "/"
+schemes:
+- "http"
+paths:
+  /topic/{eventType}:
+    post:
+      summary: "Publish SyndicationEvent to SNS"
+      description: "Publishes a message to the topic. This functionality is for debugging purposes and may be disabled."
+      operationId: "sendSyndicationEventToSns"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "eventType"
+        type: "string"
+        description: "The type of SyndicationEvent being sent"
+        required: true
+      - in: "body"
+        name: "body"
+        description: "the SyndicationEvent to create"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PublishResponse"
+        400:
+          description: "Invalid input"
+        405:
+          description: "Endpoint is disabled"
+  /event/{eventId}:
+    get:
+      summary: "Get an event"
+      description: "Return an event by ID"
+      operationId: "getEventById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        in: "path"
+        description: "EventId to get"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/EventResponse"
+        404:
+          description: "eventId not found"
+  /event/resend:
+    post:
+      summary: "Resend a list of events"
+      description: "Put events on the SNS topic"
+      operationId: "resendEventsById"
+      produces:
+      - "application/json"
+      consumes:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "eventIds"
+        description: "List of event ids to resend"
+        required: true
+        schema:
+          type: "array"
+          items:
+            type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ResendResponse"
+        404:
+          description: "eventId not found"
+  /event/membership/{membershipId}:
+    get:
+      summary: "Get events by membershipId"
+      description: "Finds events filtered by the membershipId"
+      operationId: "getEventsByMembershipId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "membershipId"
+        in: "path"
+        description: "Filter events by this membershipId"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MembershipResponse"
+        400:
+          description: "Invalid input"
+        404:
+          description: "membershipId not found"
+  /event/membership/{membershipId}/event/{eventType}:
+    get:
+      summary: "Get events by membershipId and broker event type"
+      description: "Finds events filtered by the membershipId and broker event type"
+      operationId: "getEventsByMembershipIdAndEvent"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "membershipId"
+        in: "path"
+        description: "Filter events by this membershipId"
+        required: true
+        type: "string"
+      - name: "eventType"
+        in: "path"
+        description: "Filter events by this broker event type"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MembershipResponse"
+        400:
+          description: "Invalid input"
+        404:
+          description: "membershipId and eventType not found"
+  /event/membership/{membershipId}/event/{eventType}/last:
+    get:
+      summary: "Gets the last event for a membershipId and broker event type"
+      description: "Finds the last event for a membershipId and broker event type"
+      operationId: "getLastEventByMembershipIdAndEvent"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "membershipId"
+        in: "path"
+        description: "Filter events by this membershipId"
+        required: true
+        type: "string"
+      - name: "eventType"
+        in: "path"
+        description: "Filter events by this broker event type"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MembershipResponse"
+        400:
+          description: "Invalid input"
+        404:
+          description: "membershipId and eventType not found"
+  /event/{eventType}/membership/{membershipId}:
+    get:
+      summary: "Get events by membershipId and broker event type within the given date range."
+      description: "Finds events filtered by the membershipId and broker event type and filtered by dates.  If
+        end date is provided events are filtered between the start and end dates.  If no end date is provided, all
+        events after the given start date are returned."
+      operationId: "getEventsByMembershipIdAndEventAndDateRange"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "membershipId"
+        in: "path"
+        description: "Filter events by this membershipId"
+        required: true
+        type: "string"
+      - name: "eventType"
+        in: "path"
+        description: "Filter events by this broker event type"
+        required: true
+        type: "string"
+      - name: "startDate"
+        in: "query"
+        description: "Filter events after this start date.  Date format is MMddyyyyHHmm (032820181538)"
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "endDate"
+        in: "query"
+        description: "Filter events before this end date.  Date format is MMddyyyyHHmm (042920181639).  End date must
+          be after start date."
+        required: false
+        type: "string"
+        format: "date-time"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/MembershipResponse"
+        400:
+          description: "Invalid input"
+        404:
+          description: "No events found"
+
+definitions:
+  EventResponse:
+    type: "object"
+    properties:
+      eventType:
+        type: "string"
+      event:
+        type: "string"
+  ResendResponse:
+    type: "object"
+    properties:
+      eventId:
+        type: "string"
+      messageId:
+        type: "string"
+  PublishResponse:
+    type: "object"
+    properties:
+      messageId:
+        type: "string"
+  MembershipResponse:
+    properties:
+      eventIds:
+        type: "array"
+        items:
+          type: "string"
+      events:
+        type: "array"
+        items:
+          $ref: '#/definitions/MembershipEvent'
+  MembershipEvent:
+    type: "object"
+    properties:
+      eventId:
+        type: "string"
+      eventType:
+        type: "string"
+      eventDate:
+        type: "string"
+      event:
+        type: "string"
