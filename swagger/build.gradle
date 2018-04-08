@@ -1,8 +1,15 @@
-
-plugins {
-    id 'org.hidetake.swagger.generator' version '2.11.0'
-    id 'java'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.hidetake:gradle-swagger-generator-plugin:2.11.0"
+    }
 }
+
+apply plugin: "org.hidetake.swagger.generator"
 
 dependencies {
     compile 'io.swagger:swagger-annotations:1.5.18'
@@ -11,7 +18,7 @@ dependencies {
 }
 
 swaggerSources {
-    sbux {
+    joeyslalom {
         inputFile = file('swagger.yaml')
         code {
             language = 'spring'
@@ -22,5 +29,5 @@ swaggerSources {
 }
 
 // Configure compile task dependency and source
-compileJava.dependsOn swaggerSources.sbux.code
-sourceSets.main.java.srcDir "${swaggerSources.sbux.code.outputDir}/src/main/java"
+compileJava.dependsOn swaggerSources.joeyslalom.code
+sourceSets.main.java.srcDir "${swaggerSources.joeyslalom.code.outputDir}/src/main/java"
