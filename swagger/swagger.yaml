@@ -35,39 +35,37 @@ paths:
           description: "Invalid input"
         405:
           description: "Endpoint is disabled"
-  /transit/{eventId}:
+  /transit/keys:
     get:
-      summary: "Get an event"
-      description: "Return an event by ID"
-      operationId: "getEventById"
+      summary: "List keys"
+      description: "This endpoint returns a list of keys. Only the key names are returned (not the actual keys themselves)."
+      operationId: "getListKeys"
       produces:
       - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "EventId to get"
-        required: true
-        type: "string"
       responses:
         200:
-          description: "successful operation"
+          description: "keys"
           schema:
-            $ref: "#/definitions/EventResponse"
-        404:
-          description: "eventId not found"
-  /transit/resend:
-    post:
-      summary: "Resend a list of events"
-      description: "Put events on the SNS topic"
-      operationId: "resendEventsById"
+            type: array
+            items:
+              type: string
+  /transit/encrypt/{key}:
+    put:
+      summary: "Encrypt text"
+      description: "This endpoint encrypts the provided plaintext using the named key."
+      operationId: "putEncrypt"
       produces:
       - "application/json"
       consumes:
-      - "application/json"
+      - "text/plain"
       parameters:
-      - in: "body"
-        name: "eventIds"
-        description: "List of event ids to resend"
+      - in: path
+        required: true
+        name: key
+        type: string
+      - in: body
+        name: plainText
+        description: "Plain text to encrypt"
         required: true
         schema:
           type: "array"
@@ -82,14 +80,24 @@ paths:
               $ref: "#/definitions/ResendResponse"
         404:
           description: "eventId not found"
+  /transit/decrypt/{key}:
+    put:
+      summary: "Decrypt text"
+      description: "This endpoint decrypts the provided ciphertext using the named key."
+      operationId: "putDecrypt"
+      produces:
+      - "text/plain"
+      consumes:
+      - "text/plain"
+      parameters:
+      - in: path
+        required: true
+        name: key
+        type: string
+      responses:
+        200:
+          description: "good"
 definitions:
-  EventResponse:
-    type: "object"
-    properties:
-      eventType:
-        type: "string"
-      event:
-        type: "string"
   ResendResponse:
     type: "object"
     properties:
