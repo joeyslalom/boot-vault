@@ -44,7 +44,7 @@ paths:
       - "application/json"
       responses:
         200:
-          description: "keys"
+          description: "Encryption keys"
           schema:
             type: array
             items:
@@ -55,11 +55,12 @@ paths:
       description: "This endpoint encrypts the provided plaintext using the named key."
       operationId: "putEncrypt"
       produces:
-      - "application/json"
+      - "text/plain"
       consumes:
       - "text/plain"
       parameters:
       - in: path
+        description: "Encryption key"
         required: true
         name: key
         type: string
@@ -68,18 +69,12 @@ paths:
         description: "Plain text to encrypt"
         required: true
         schema:
-          type: "array"
-          items:
-            type: "string"
+          type: "string"
       responses:
         200:
-          description: "successful operation"
+          description: "Successfully encrypted"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/ResendResponse"
-        404:
-          description: "eventId not found"
+            type: string
   /transit/decrypt/{key}:
     put:
       summary: "Decrypt text"
@@ -92,19 +87,21 @@ paths:
       parameters:
       - in: path
         required: true
+        description: "Decryption key"
         name: key
         type: string
+      - in: body
+        name: cipherText
+        description: "Ciphertext to decrypt"
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: "good"
+          schema:
+            type: string
 definitions:
-  ResendResponse:
-    type: "object"
-    properties:
-      eventId:
-        type: "string"
-      messageId:
-        type: "string"
   PublishResponse:
     type: "object"
     properties:
