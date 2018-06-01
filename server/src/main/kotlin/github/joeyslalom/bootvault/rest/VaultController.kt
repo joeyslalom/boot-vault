@@ -3,14 +3,17 @@ package github.joeyslalom.bootvault.rest
 import github.joeyslalom.bootvault.SnsClient
 import github.joeyslalom.bootvault.SnsVaultProps
 import github.joeyslalom.bootvault.rest.api.AwsApi
+import github.joeyslalom.bootvault.rest.api.SecretApi
 import github.joeyslalom.bootvault.rest.api.TransitApi
 import github.joeyslalom.bootvault.rest.model.PublishResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.vault.core.VaultOperations
+import org.springframework.vault.support.VaultTransitContext
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 
 
 @Controller
@@ -45,4 +48,32 @@ class TransitController(private val vaultOps: VaultOperations) : TransitApi {
 
     override fun putDecrypt(@PathVariable key: String, @RequestBody cipherText: String): ResponseEntity<String> =
             ResponseEntity.ok(transitOps.decrypt(key, cipherText))
+
+    override fun putDecryptConvergent(@PathVariable key: String,
+                                      @RequestHeader context: String,
+                                      @RequestBody cipherText: String): ResponseEntity<String> {
+        val transitContext = VaultTransitContext.fromContext(context.toByteArray())
+        return ResponseEntity.ok(String(transitOps.decrypt(key, cipherText, transitContext)))
+    }
+
+    override fun putEncryptConvergent(@PathVariable key: String,
+                                      @RequestHeader context: String,
+                                      @RequestBody plainText: String): ResponseEntity<String> {
+        val transitContext = VaultTransitContext.fromContext(context.toByteArray())
+        return ResponseEntity.ok(transitOps.encrypt(key, plainText.toByteArray(), transitContext))
+    }
+}
+
+@Controller
+class SecretController(private val vaultOps: VaultOperations) : SecretApi {
+
+    override fun getSecretListGroup(@PathVariable group: String): ResponseEntity<List<String>> {
+        val list: List<String> = vaultOps.list("secret/$group")!!.filterNotNull()
+        return ResponseEntity.ok(list)
+    }
+
+    override fun getSecretName(@PathVariable group: String, @PathVariable name: String): ResponseEntity<Any> {
+        val data: Map<String, String> = vaultOps.read("secret/$group/$name")!!.data!!.map { (k, v) -> k to v.toString() }.toMap()
+        return ResponseEntity.ok(data)
+    }
 }
