@@ -82,6 +82,37 @@ paths:
           description: "Successfully encrypted"
           schema:
             type: string
+  /transit/encrypt/convergent/{key}:
+    put:
+      summary: "Encrypt text using convergent key"
+      description: "This endpoint encrypts the provided plaintext using the named convergent key."
+      operationId: "putEncryptConvergent"
+      produces:
+      - "text/plain"
+      consumes:
+      - "text/plain"
+      parameters:
+      - in: path
+        description: "Convergent encryption key"
+        required: true
+        name: key
+        type: string
+      - in: header
+        description: "Encryption context"
+        required: true
+        name: context
+        type: string
+      - in: body
+        name: plainText
+        description: "Plain text to encrypt"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "Successfully encrypted"
+          schema:
+            type: string
   /transit/decrypt/{key}:
     put:
       summary: "Decrypt text"
@@ -108,6 +139,80 @@ paths:
           description: "good"
           schema:
             type: string
+  /transit/decrypt/convergent/{key}:
+    put:
+      summary: "Decrypt text"
+      description: "This endpoint decrypts the provided ciphertext using the named convergent key."
+      operationId: "putDecryptConvergent"
+      produces:
+      - "text/plain"
+      consumes:
+      - "text/plain"
+      parameters:
+      - in: path
+        required: true
+        description: "Decryption key"
+        name: key
+        type: string
+      - in: header
+        description: "Encryption context"
+        required: true
+        name: context
+        type: string
+      - in: body
+        name: cipherText
+        description: "Ciphertext to decrypt"
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: "good"
+          schema:
+            type: string
+  /secret/list/{group}:
+    get:
+      summary: "List secrets"
+      description: "List the secrets saved in vault at path eg., use1-ucp-dev"
+      operationId: "getSecretListGroup"
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        required: true
+        description: "path for secrets"
+        name: group
+        type: string
+      responses:
+        200:
+          description: "good"
+          schema:
+            type: array
+            items:
+              type: string
+  /secret/{group}/{name}:
+    get:
+      summary: "Read secret"
+      description: "Read the secret with the given name"
+      operationId: getSecretName
+      produces:
+      - "application/json"
+      parameters:
+      - in: path
+        required: true
+        description: "secret group"
+        name: group
+        type: string
+      - in: path
+        required: true
+        description: "secret name"
+        name: name
+        type: string
+      responses:
+        200:
+          description: "good"
+          schema:
+            type: object
 definitions:
   PublishRequest:
     type: "object"
