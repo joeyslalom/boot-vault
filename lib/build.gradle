@@ -1,0 +1,7 @@
+
+dependencies {
+    compile('org.springframework.vault:spring-vault-core:2.0.1.RELEASE')
+
+    compile 'com.amazonaws:aws-java-sdk-sqs'
+    compile 'com.amazonaws:aws-java-sdk-sns'
+}

@@ -1,10 +1,10 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+    compile project(":lib")
 
     compile('org.springframework.shell:spring-shell-starter:2.0.0.RELEASE')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
-    compile('org.springframework.cloud:spring-cloud-starter-vault-config')
 }
 
 bootJar {

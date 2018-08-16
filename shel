@@ -1,4 +1,4 @@
 #!/bin/bash
 
 ./gradlew :shell:build
-SPRING_PROFILES_ACTIVE=local java -jar shell/build/libs/shell-0.0.1-SNAPSHOT.jar
+java -jar shell/build/libs/shell-0.0.1-SNAPSHOT.jar

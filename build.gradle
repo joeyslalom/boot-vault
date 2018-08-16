@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        kotlinVersion = '1.2.31'
-        springBootVersion = '2.0.1.RELEASE'
-        springfoxVersion = '2.8.0'
+        kotlinVersion = '1.2.60'
+        springBootVersion = '2.0.4.RELEASE'
+        springfoxVersion = '2.9.2'
     }
     repositories {
         mavenCentral()
@@ -38,18 +38,11 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-    }
-
-    ext {
-        springCloudVersion = 'Finchley.BUILD-SNAPSHOT'
     }
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-            mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.301"
+            mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.386"
         }
     }
 
