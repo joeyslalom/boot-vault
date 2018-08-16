@@ -1,5 +1,6 @@
 package github.joeyslalom
 
+import github.joeyslalom.aws.AwsS3Config
 import github.joeyslalom.vault.VaultGenericConfig
 import github.joeyslalom.vault.VaultTransitConfig
 import org.springframework.boot.SpringApplication
@@ -15,5 +16,5 @@ fun main(args: Array<String>) {
 }
 
 @Configuration
-@Import(value = [VaultGenericConfig::class, VaultTransitConfig::class])
+@Import(value = [VaultGenericConfig::class, VaultTransitConfig::class, AwsS3Config::class])
 class VaultConfig
