@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./gradlew :shell:build
+java -jar shell/build/libs/shell-0.0.1-SNAPSHOT.jar

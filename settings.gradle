@@ -1,3 +1,5 @@
 rootProject.name = 'boot-vault'
 
-include 'server', 'swagger'
+include 'lib'
+include 'swagger'
+include 'server', 'shell'

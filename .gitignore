@@ -24,3 +24,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+vault-shell.log
+spring-shell.log
+cacerts.jks
