@@ -6,10 +6,6 @@ import org.springframework.vault.core.lease.domain.RequestedSecret
 import org.springframework.vault.core.util.PropertyTransformers
 
 
-val STS_PREFIX_S3 = "sts.s3."
-val STS_PREFIX_SQS = "sts.sqs."
-val STS_PREFIX_SNS = "sts.sns."
-
 fun rotatingPropertySource(stsPath: String,
                            secretLeaseContainer: SecretLeaseContainer,
                            prefix: String): LeaseAwareVaultPropertySource {
