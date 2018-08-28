@@ -45,5 +45,15 @@ class VaultShell(private val vaultTemplate: VaultTemplate, private val transitSe
     fun listTransitKeys(): List<String> {
         return transitService.keys()
     }
+
+    @ShellMethod("list given path")
+    fun vaultList(path: String): List<String> {
+        return vaultTemplate.list(path)!!
+    }
+
+    @ShellMethod("read secret at given path")
+    fun vaultRead(path: String): Map<String, Any> {
+        return vaultTemplate.read(path).data!!
+    }
 }
 
